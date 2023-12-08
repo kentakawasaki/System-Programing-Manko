@@ -1,0 +1,113 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
+
+public class Algorithms {
+
+    public static void bucketSort(double[] array) {
+        int n = array.length;
+        if (n <= 0) {
+            System.out.println("Array is empty.");
+            return;
+        }
+
+        @SuppressWarnings("unchecked")
+        ArrayList<Double>[] buckets = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            buckets[i] = new ArrayList<>();
+        }
+
+        for (double num : array) {
+            int bucketIndex = (int) (num * n);
+            buckets[bucketIndex].add(num);
+        }
+
+        for (ArrayList<Double> bucket : buckets) {
+            Collections.sort(bucket);
+        }
+
+        int index = 0;
+        for (ArrayList<Double> bucket : buckets) {
+            for (double num : bucket) {
+                array[index++] = num;
+            }
+        }
+    }
+
+    public static int binarySearch(int[] array, int target) {
+        int low = 0;
+        int high = array.length - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (array[mid] == target) {
+                return mid;
+            } else if (array[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        return -1; 
+    }
+
+    public static int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+
+        Map<Integer, Integer> memo = new HashMap<>();
+        if (memo.containsKey(n)) {
+            return memo.get(n);
+        }
+
+        int result = fibonacci(n - 1) + fibonacci(n - 2);
+        memo.put(n, result);
+        return result;
+    }
+
+    public static boolean isBracketBalanced(String expression) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char bracket : expression.toCharArray()) {
+            if (bracket == '(' || bracket == '[' || bracket == '{') {
+                stack.push(bracket);
+            } else if (bracket == ')' && !stack.isEmpty() && stack.peek() == '(') {
+                stack.pop();
+            } else if (bracket == ']' && !stack.isEmpty() && stack.peek() == '[') {
+                stack.pop();
+            } else if (bracket == '}' && !stack.isEmpty() && stack.peek() == '{') {
+                stack.pop();
+            } else {
+                return false; 
+            }
+        }
+
+        return stack.isEmpty(); 
+    }
+
+    public static void main(String[] args) {
+        double[] bucketSortArray = {0.8, 0.2, 0.5, 0.3, 0.1};
+        bucketSort(bucketSortArray);
+        System.out.println("Bucket Sorted Array: " + Arrays.toString(bucketSortArray));
+
+        int[] binarySearchArray = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int binarySearchResult = binarySearch(binarySearchArray, 5);
+        System.out.println("Binary Search Result: " + binarySearchResult);
+
+        int fibonacciResult = fibonacci(6);
+        System.out.println("Fibonacci Result: " + fibonacciResult);
+
+        String balancedExpression = "{[()]}";
+        System.out.println("Bracket Balanced: " + isBracketBalanced(balancedExpression));
+
+        String unbalancedExpression = "{[()]";
+        System.out.println("Bracket Balanced: " + isBracketBalanced(unbalancedExpression));
+    }
+}
